@@ -19,6 +19,9 @@ t/example/hello-zh-big5.xml
 t/example/hello-zh-gb2312.xml
 t/example/hello-zh-utf8.xml
 t/example/index.rdf
+t/example/hello-en-nodecl-bom.xml
+t/example/hello-en-noenc-bom.xml
+t/example/hello-en-utf8-bom.xml
 t/00_pod.t
 t/01_parse.t
 t/02_write.t
@@ -63,3 +66,4 @@ t/40_writefile_jcode.t
 t/41_writefile_encode.t
 t/42_cdata_comment.t
 t/43_encoding_quote.t
+t/44_utf8_bom.t

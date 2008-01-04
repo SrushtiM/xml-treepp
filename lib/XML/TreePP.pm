@@ -407,7 +407,7 @@ use Carp;
 use Symbol;
 
 use vars qw( $VERSION );
-$VERSION = '0.32';
+$VERSION = '0.33';
 
 my $XML_ENCODING      = 'UTF-8';
 my $INTERNAL_ENCODING = 'UTF-8';
@@ -741,6 +741,7 @@ sub xml_to_flat {
           )
           = ( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13 );
         if ( defined $ahead && $ahead =~ /\S/ ) {
+            $ahead =~ s/([^\040-\076])/sprintf("\\x%02X",ord($1))/eg;
             $self->warn( "Invalid string: [$ahead] before <$match>" );
         }
 
@@ -1064,7 +1065,7 @@ sub read_raw_xml {
 sub xml_decl_encoding {
     my $textref = shift;
     return unless defined $$textref;
-    my $args    = ( $$textref =~ /^\s*<\?xml(\s+\S.*)\?>/s )[0] or return;
+    my $args    = ( $$textref =~ /^(?:\s*\xEF\xBB\xBF)?\s*<\?xml(\s+\S.*)\?>/s )[0] or return;
     my $getcode = ( $args =~ /\s+encoding=(".*?"|'.*?')/ )[0] or return;
     $getcode =~ s/^['"]//;
     $getcode =~ s/['"]$//;
@@ -1080,6 +1081,10 @@ sub encode_from_to {
     unless ( defined $Encode::EUCJPMS::VERSION ) {
         $from = 'EUC-JP' if ( $from =~ /\beuc-?jp-?(win|ms)$/i );
         $to   = 'EUC-JP' if ( $to   =~ /\beuc-?jp-?(win|ms)$/i );
+    }
+
+    if ( $from =~ /^utf-?8$/i ) {
+        $$txtref =~ s/^\xEF\xBB\xBF//s;         # UTF-8 BOM (Byte Order Mark)
     }
 
     my $setflag = $self->{utf8_flag} if exists $self->{utf8_flag};
