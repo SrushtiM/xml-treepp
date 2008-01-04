@@ -3,13 +3,16 @@
 <channel rdf:about="http://www.kawa.net/xp/index-e.html">
 <title>Kawa.net xp - ajax/JavaScript/Perl/CGI by Yusuke Kawasaki</title>
 <link>http://www.kawa.net/xp/index-e.html</link>
-<dc:date>2007-09-22T03:15:00+09:00</dc:date>
+<dc:date>2008-01-02T00:55:00+09:00</dc:date>
 <dc:language>en</dc:language>
 <dc:rights>Copyright 1995-2006 Yusuke Kawasaki. All rights reserved.</dc:rights>
 <description>Yusuke Kawasaki&apos;s homepage from Japan. Ajax/JavaScript/Perl/CGI/etc. technical articles and photos.</description>
 <image rdf:resource="http://www.kawa.net/xp/images/xp-title-128x32.gif" />
 <items>
 <rdf:Seq>
+<rdf:li rdf:resource="http://www.kawa.net/works/perl/feedpp/feedpp-e.html" />
+<rdf:li rdf:resource="http://tech.groups.yahoo.com/group/xml-treepp/message/25" />
+<rdf:li rdf:resource="http://www.kawa.net/works/perl/treepp/treepp-e.html" />
 <rdf:li rdf:resource="http://kawanet.blogspot.com/2007/11/event-john-resig-and-future-of.html" />
 <rdf:li rdf:resource="http://kawanet.blogspot.com/2007/10/gugod-and-ebisujs.html" />
 <rdf:li rdf:resource="http://kawanet.blogspot.com/2007/11/event-panel-discussion-about-web20s.html" />
@@ -24,9 +27,7 @@
 <rdf:li rdf:resource="http://kawanet.blogspot.com/2007/05/javascript-variable-char-is-not-valid.html" />
 <rdf:li rdf:resource="http://tech.groups.yahoo.com/group/xml-treepp/message/24" />
 <rdf:li rdf:resource="http://tech.groups.yahoo.com/group/xml-treepp/message/21" />
-<rdf:li rdf:resource="http://www.kawa.net/works/perl/treepp/treepp-e.html" />
 <rdf:li rdf:resource="http://tech.groups.yahoo.com/group/xml-feedpp/message/16" />
-<rdf:li rdf:resource="http://www.kawa.net/works/perl/feedpp/feedpp-e.html" />
 <rdf:li rdf:resource="http://tech.groups.yahoo.com/group/xml-treepp/message/20" />
 <rdf:li rdf:resource="http://www.kawa.net/works/perl/overhttp/overhttp-e.html" />
 <rdf:li rdf:resource="http://tech.groups.yahoo.com/group/xml-treepp/message/19" />
@@ -106,6 +107,68 @@
 <title>Kawa.net xp - ajax/JavaScript/Perl/CGI by Yusuke Kawasaki</title>
 <link>http://www.kawa.net/xp/index-e.html</link>
 </image>
+<item rdf:about="http://www.kawa.net/works/perl/feedpp/feedpp-e.html">
+<title>[Perl] XML::FeedPP - Parse/write/merge/edit RSS/RDF/Atom syndication feeds</title>
+<link>http://www.kawa.net/works/perl/feedpp/feedpp-e.html</link>
+<dc:date>2007-12-23T17:36:00+09:00</dc:date>
+<dc:subject>Perl</dc:subject>
+<description>XML::FeedPP is an all-purpose syndication utility that parses and publishes
+RSS 2.0, RSS 1.0 (RDF), Atom 0.3 and 1.0 feeds.
+It allows you to add new content, merge feeds, and convert among various formats.
+It is a pure Perl implementation and does not require any other module except for XML::TreePP.
+Stable archive:
+XML-FeedPP-0.32.tar.gz
+TARGZ
+CPAN
+Current source:
+lib/XML/FeedPP.pm
+PM
+Documents:
+README
+README
+Changes
+Changes
+Subversion repository:
+http://xml-feedpp.googlecode.com/svn/trunk/
+SVN
+Join the XML::FeedPP Group
+on Yahoo! Groups to discuss about the module.
+And annotating documents is welcome.</description>
+</item>
+<item rdf:about="http://tech.groups.yahoo.com/group/xml-treepp/message/25">
+<title>Re: [rt.cpan.org #30187] Encoding error with uncommon XML data</title>
+<link>http://tech.groups.yahoo.com/group/xml-treepp/message/25</link>
+<dc:creator>Kawasaki Yusuke</dc:creator>
+<dc:date>2007-11-11T10:25:51Z</dc:date>
+<description>@xatrix thank you for your feature requesting! I released XML::TreePP version 0.32. http://www.kawa.net/works/perl/treepp/treepp-e.html </description>
+</item>
+<item rdf:about="http://www.kawa.net/works/perl/treepp/treepp-e.html">
+<title>[Perl] XML::TreePP - A pure Perl implementation for parsing/writing xml file</title>
+<link>http://www.kawa.net/works/perl/treepp/treepp-e.html</link>
+<dc:date>2007-11-11T18:59:00+09:00</dc:date>
+<dc:subject>Perl</dc:subject>
+<description>XML::TreePP module parses XML file and expand it for a hash tree.
+And also this generates XML file from a hash tree.
+This module is a pure Perl implementation.
+You can also fetch an XML file from remote web server
+like an XMLHttpRequest object in JavaScript language.
+I think that XML::TreePP is enough fast and easy to use!
+Current version:
+XML-TreePP-0.32.tar.gz
+TARGZ
+.pm source file only:
+XML/TreePP.pm
+PM
+Documents:
+README
+README
+Changes
+Changes
+XML::TreePP Group
+mailing list is available on Yahoo! Groups.
+XML.ObjTree
+class is a JavaScript port of this module.</description>
+</item>
 <item rdf:about="http://kawanet.blogspot.com/2007/11/event-john-resig-and-future-of.html">
 <title>[Event] John Resig and The Future of JavaScript</title>
 <link>http://kawanet.blogspot.com/2007/11/event-john-resig-and-future-of.html</link>
@@ -204,67 +267,12 @@
 <dc:date>2007-09-25T19:15:25Z</dc:date>
 <description>I announce that XML::TreePP version 0.31 was released last weekend. Previous versions had a problem in writefile() method used without utf8_flag =&gt; 1. I</description>
 </item>
-<item rdf:about="http://www.kawa.net/works/perl/treepp/treepp-e.html">
-<title>[Perl] XML::TreePP - A pure Perl implementation for parsing/writing xml file</title>
-<link>http://www.kawa.net/works/perl/treepp/treepp-e.html</link>
-<dc:date>2007-09-22T03:15:00+09:00</dc:date>
-<dc:subject>Perl</dc:subject>
-<description>XML::TreePP module parses XML file and expand it for a hash tree.
-And also this generates XML file from a hash tree.
-This module is a pure Perl implementation.
-You can also fetch an XML file from remote web server
-like an XMLHttpRequest object in JavaScript language.
-I think that XML::TreePP is enough fast and easy to use!
-Current version:
-XML-TreePP-0.31.tar.gz
-TARGZ
-.pm source file only:
-XML/TreePP.pm
-PM
-Documents:
-README
-README
-Changes
-Changes
-XML::TreePP Group
-mailing list is available on Yahoo! Groups.
-XML.ObjTree
-class is a JavaScript port of this module.</description>
-</item>
 <item rdf:about="http://tech.groups.yahoo.com/group/xml-feedpp/message/16">
 <title>XML::FeedPP 0.30 Released!</title>
 <link>http://tech.groups.yahoo.com/group/xml-feedpp/message/16</link>
 <dc:creator>Kawasaki Yusuke</dc:creator>
 <dc:date>2007-08-19T18:48:54Z</dc:date>
 <description>I announce that XML::FeedPP version 0.30 released. ======================================================== # XML::FeedPP Changes 2007/08/20 (0.30) * Atom 1.0</description>
-</item>
-<item rdf:about="http://www.kawa.net/works/perl/feedpp/feedpp-e.html">
-<title>[Perl] XML::FeedPP - Parse/write/merge/edit RSS/RDF/Atom syndication feeds</title>
-<link>http://www.kawa.net/works/perl/feedpp/feedpp-e.html</link>
-<dc:date>2007-08-20T03:32:00+09:00</dc:date>
-<dc:subject>Perl</dc:subject>
-<description>XML::FeedPP is an all-purpose syndication utility that parses and publishes
-RSS 2.0, RSS 1.0 (RDF), Atom 0.3 and 1.0 feeds.
-It allows you to add new content, merge feeds, and convert among various formats.
-It is a pure Perl implementation and does not require any other module except for XML::TreePP.
-Source archive:
-XML-FeedPP-0.30.tar.gz
-TARGZ
-CPAN
-.pm source file only:
-XML/FeedPP.pm
-PM
-Documents:
-README
-README
-Changes
-Changes
-Join the XML::FeedPP Group
-on Yahoo! Groups to discuss about the module.
-And annotating the document is welcome.
-Atom 1.0 is supported! (version 0.30)
-A compiling problem in summer time zone is fixed! (version 0.22)
-more...</description>
 </item>
 <item rdf:about="http://tech.groups.yahoo.com/group/xml-treepp/message/20">
 <title>XML::TreePP 0.27 Released!</title>
