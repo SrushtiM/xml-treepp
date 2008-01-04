@@ -1,5 +1,9 @@
 # XML::TreePP Changes
 
+2008/01/04 (0.33)
+    * supports UTF-8 with BOM when parsing XML
+      http://www.kawa.net/works/perl/feedpp/feedpp.html#com-2008-01-03T15:02:56Z
+
 2007/11/11 (0.32)
     * supports invalid xml decl quoted with single quote (thanks to xatrix)
       ex. <?xml version='1.0' encoding='windows-1250'?>
