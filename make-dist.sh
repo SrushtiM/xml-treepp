@@ -9,7 +9,8 @@ doit () {
     $* || die "[ERROR:$?]"
 }
 
-doit wget -O t/example/index.rdf http://www.kawa.net/rss/index-e.rdf
+rdf=t/example/index.rdf
+doit wget --timestamping -O $rdf http://www.kawa.net/rss/index-e.rdf
 
 egrep -v '^t/.*\.t$' MANIFEST > MANIFEST~
 ls t/*.t >> MANIFEST~
