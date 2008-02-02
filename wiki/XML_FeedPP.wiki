@@ -46,35 +46,35 @@ module except for XML::TreePP.
 
 = METHODS FOR FEED =
 
-== $feed &#3d XML::FeedPP->new( "index.rss" ); ==
+== $feed &#x3D; XML::FeedPP->new( "index.rss" ); ==
 
 This constructor method creates an `XML::FeedPP` feed instance. The only
 argument is the local filename.  The format of $source must be one of
 the supported feed formats -- RSS, RDF or Atom -- or execution is
 halted.
 
-== $feed &#3d XML::FeedPP->new( "http://use.perl.org/index.rss" ); ==
+== $feed &#x3D; XML::FeedPP->new( "http://use.perl.org/index.rss" ); ==
 
 The URL on the remote web server is also available as the first argument.
 [http://search.cpan.org/dist/LWP-UserAgent LWP::UserAgent] is required to download it.
 
-== $feed &#3d XML::FeedPP->new( "<?xml?><rss version&#3d..." ); ==
+== $feed &#x3D; XML::FeedPP->new( "<?xml?><rss version&#x3D;..." ); ==
 
 The XML source code is also available as the first argument.
 
-== $feed &#3d XML::FeedPP::RSS->new( $source ); ==
+== $feed &#x3D; XML::FeedPP::RSS->new( $source ); ==
 
 This constructor method creates an instance for an RSS 2.0 feed.
 The first argument is optional, but must be valid an RSS source if specified.
 This method returns an empty instance when $source is undefined.
 
-== $feed &#3d XML::FeedPP::RDF->new( $source ); ==
+== $feed &#x3D; XML::FeedPP::RDF->new( $source ); ==
 
 This constructor method creates an instance for RSS 1.0 (RDF) feed.
 The first argument is optional, but must be an RDF source if specified.
 This method returns an empty instance when $source is undefined.
 
-== $feed &#3d XML::FeedPP::Atom->new( $source ); ==
+== $feed &#x3D; XML::FeedPP::Atom->new( $source ); ==
 
 This constructor method creates an instance for an Atom 0.3/1.0 feed.
 The first argument is optional, but must be an Atom source if specified.
@@ -83,7 +83,7 @@ This method returns an empty instance when $source is undefined.
 Atom 1.0 feed is supported since `XML::FeedPP` version 0.30.
 Atom 0.3 is still default however.
 
-== $feed &#3d XML::FeedPP::RSS->new( link &#3d> $link, title &#3d> $tile, ... ); ==
+== $feed &#x3D; XML::FeedPP::RSS->new( link &#x3D;> $link, title &#x3D;> $tile, ... ); ==
 
 This constructor method creates an instance
 which has `link`, `title` elements etc.
@@ -99,7 +99,7 @@ This method merges an RSS/RDF/Atom file into the existing $feed
 instance. Top-level metadata from the imported feed is incorporated
 only if missing from the present feed.
 
-== $string &#3d $feed->to_string( $encoding ); ==
+== $string &#x3D; $feed->to_string( $encoding ); ==
 
 This method generates XML source as string and returns it.  The output
 $encoding is optional, and the default encoding is 'UTF-8'.  On Perl
@@ -113,23 +113,23 @@ the Jcode module are available: 'UTF-8', 'Shift_JIS', 'EUC-JP' and
 This method generate an XML file.  The output $encoding is optional,
 and the default is 'UTF-8'.
 
-== $item &#3d $feed->add_item( $link ); ==
+== $item &#x3D; $feed->add_item( $link ); ==
 
 This method creates a new item/entry and returns its instance.
 A mandatory $link argument is the URL of the new item/entry.
 
-== $item &#3d $feed->add_item( $srcitem ); ==
+== $item &#x3D; $feed->add_item( $srcitem ); ==
 
 This method duplicates an item/entry and adds it to $feed.
 $srcitem is a `XML::FeedPP::*::Item` class's instance
 which is returned by `get_item()` method, as described above.
 
-== $item &#3d $feed->add_item( link &#3d> $link, title &#3d> $tile, ... ); ==
+== $item &#x3D; $feed->add_item( link &#x3D;> $link, title &#x3D;> $tile, ... ); ==
 
 This method creates an new item/entry
 which has `link`, `title` elements etc.
 
-== $item &#3d $feed->get_item( $index ); ==
+== $item &#x3D; $feed->get_item( $index ); ==
 
 This method returns item(s) in a $feed.
 A valid zero-based array $index returns the corresponding item in the feed.
@@ -137,7 +137,7 @@ An invalid $index yields undef.
 If $index is undefined in array context, it returns an array of all items.
 If $index is undefined in scalar context, it returns the number of items.
 
-== @items &#3d $feed->match_item( link &#3d> qr/.../, title &#3d> qr/.../, ... ); ==
+== @items &#x3D; $feed->match_item( link &#x3D;> qr/.../, title &#x3D;> qr/.../, ... ); ==
 
 This method finds item(s) which match all regular expressions given.
 This method returns an array of all matched items in array context.
@@ -171,15 +171,15 @@ Removes items in excess of the specified numeric limit. Items at the
 end of the list are removed. When preceded by `sort_item()` or
 `normalize()`, this deletes more recent items.
 
-== $feed->xmlns( "xmlns:media" &#3d> "http://search.yahoo.com/mrss" ); ==
+== $feed->xmlns( "xmlns:media" &#x3D;> "http://search.yahoo.com/mrss" ); ==
 
 Adds an XML namespace at the document root of the feed.
 
-== $url &#3d $feed->xmlns( "xmlns:media" ); ==
+== $url &#x3D; $feed->xmlns( "xmlns:media" ); ==
 
 Returns the URL of the specified XML namespace.
 
-== @list &#3d $feed->xmlns(); ==
+== @list &#x3D; $feed->xmlns(); ==
 
 Returns the list of all XML namespaces used in $feed.
 
@@ -262,24 +262,24 @@ returning its current value when $name is undefined.
 It is mapped to `dc:creator` element for RDF,
 `author` for Atom 0.3/1.0.
 
-== $item->guid( $guid, isPermaLink &#3d> $bool ); ==
+== $item->guid( $guid, isPermaLink &#x3D;> $bool ); ==
 
 This method sets/gets the item's `guid` element,
 returning its current value when $guid is undefined.
 It is mapped to `id` element for Atom, and ignored for RDF.
 The second argument is optional.
 
-== $item->set( $key &#3d> $value, ... ); ==
+== $item->set( $key &#x3D;> $value, ... ); ==
 
 This method sets customized node values or attributes.
 See also [http://search.cpan.org/dist//ACCESSOR AND MUTATORS /ACCESSOR AND MUTATORS] section below.
 
-== $value &#3d $item->get( $key ); ==
+== $value &#x3D; $item->get( $key ); ==
 
 This method returns the node value or attribute.
 See also [http://search.cpan.org/dist//ACCESSOR AND MUTATORS /ACCESSOR AND MUTATORS] section below.
 
-== $link &#3d $item->link(); ==
+== $link &#x3D; $item->link(); ==
 
 This method returns the item's `link` element.
 
@@ -291,25 +291,25 @@ There are NO native methods for any other external modules, such as `media:*`.
 But `set()` and `get()` methods are available to get/set
 the value of any elements or attributes for these modules.
 
-== $item->set( "module:name" &#3d> $value ); ==
+== $item->set( "module:name" &#x3D;> $value ); ==
 
 This sets the value of the child node:
 {{{
     <item><module:name>$value</module:name>...</item>
 }}}
-== $item->set( "module:name@attr" &#3d> $value ); ==
+== $item->set( "module:name@attr" &#x3D;> $value ); ==
 
 This sets the value of the child node's attribute:
 {{{
     <item><module:name attr="$value" />...</item>
 }}}
-== $item->set( "@attr" &#3d> $value ); ==
+== $item->set( "@attr" &#x3D;> $value ); ==
 
 This sets the value of the item's attribute:
 {{{
     <item attr="$value">...</item>
 }}}
-== $item->set( "hoge/pomu@hare" &#3d> $value ); ==
+== $item->set( "hoge/pomu@hare" &#x3D;> $value ); ==
 
 This code sets the value of the child node's child node's attribute:
 {{{
@@ -320,16 +320,16 @@ This code sets the value of the child node's child node's attribute:
 `XML::FeedPP` allows you to describe date/time using any of the three
 following formats:
 
-== $date &#3d "Thu, 23 Feb 2006 14:43:43 +0900"; ==
+== $date &#x3D; "Thu, 23 Feb 2006 14:43:43 +0900"; ==
 
 This is the HTTP protocol's preferred format and RSS 2.0's native
 format, as defined by RFC 1123.
 
-== $date &#3d "2006-02-23T14:43:43+09:00"; ==
+== $date &#x3D; "2006-02-23T14:43:43+09:00"; ==
 
 W3CDTF is the native format of RDF, as defined by ISO 8601.
 
-== $date &#3d 1140705823; ==
+== $date &#x3D; 1140705823; ==
 
 The last format is the number of seconds since the epoch,
 `1970-01-01T00:00:00Z`.
