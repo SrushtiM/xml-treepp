@@ -184,7 +184,7 @@ returns a hash tree converted.
 `$url` is an URI of a XML file.
 `$body` is a request body when you use POST method.
 `$head` is a request headers as a hash ref.
-L<LWP::UserAgent> module or L<HTTP::Lite> module is required to fetch a file.
+[http://search.cpan.org/dist/LWP-UserAgent LWP::UserAgent] module or [http://search.cpan.org/dist/HTTP-Lite HTTP::Lite] module is required to fetch a file.
 {{{
     ( $tree, $xml, $code ) = $tpp->parsehttp( $method, $url, $body, $head );
 }}}
@@ -256,21 +256,21 @@ substituted with the version number of this library.
 
 == http_lite ==
 
-This option forces pasrsehttp() method to use a L<HTTP::Lite> instance.
+This option forces pasrsehttp() method to use a [http://search.cpan.org/dist/HTTP-Lite HTTP::Lite] instance.
 {{{
     my $http = HTTP::Lite->new();
     $tpp->set( http_lite => $http );
 }}}
 == lwp_useragent ==
 
-This option forces pasrsehttp() method to use a L<LWP::UserAgent> instance.
+This option forces pasrsehttp() method to use a [http://search.cpan.org/dist/LWP-UserAgent LWP::UserAgent] instance.
 {{{
     my $ua = LWP::UserAgent->new();
     $ua->timeout( 60 );
     $ua->env_proxy;
     $tpp->set( lwp_useragent => $ua );
 }}}
-You may use this with L<LWP::UserAgent::WithCache>.
+You may use this with [http://search.cpan.org/dist/LWP-UserAgent-WithCache LWP::UserAgent::WithCache].
 
 == base_class ==
 
@@ -283,7 +283,7 @@ Each class is named straight as a child class of it parent class.
     print ref $tree->{root}->{parent}->{child}, "\n";
 }}}
 A hash for <child> element above is blessed to `MyElement::root::parent::child`
-class. You may use this with L<Class::Accessor>.
+class. You may use this with [http://search.cpan.org/dist/Class-Accessor Class::Accessor].
 
 == elem_class ==
 
@@ -382,7 +382,7 @@ This option makes all errors ignored and just return.
 == use_ixhash ==
 
 This option keeps the order for each element appeared in XML.
-L<Tie::IxHash> module is required.
+[http://search.cpan.org/dist/Tie-IxHash Tie::IxHash] module is required.
 {{{
     $tpp->set( use_ixhash => 1 );
 }}}
