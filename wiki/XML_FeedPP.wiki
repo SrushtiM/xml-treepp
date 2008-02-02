@@ -83,7 +83,7 @@ This method returns an empty instance when $source is undefined.
 Atom 1.0 feed is supported since `XML::FeedPP` version 0.30.
 Atom 0.3 is still default however.
 
-== $feed &#3d XML::FeedPP::RSS->new( link &#3d> $link, title => $tile, ... ); ==
+== $feed &#3d XML::FeedPP::RSS->new( link &#3d> $link, title &#3d> $tile, ... ); ==
 
 This constructor method creates an instance
 which has `link`, `title` elements etc.
@@ -124,7 +124,7 @@ This method duplicates an item/entry and adds it to $feed.
 $srcitem is a `XML::FeedPP::*::Item` class's instance
 which is returned by `get_item()` method, as described above.
 
-== $item &#3d $feed->add_item( link &#3d> $link, title => $tile, ... ); ==
+== $item &#3d $feed->add_item( link &#3d> $link, title &#3d> $tile, ... ); ==
 
 This method creates an new item/entry
 which has `link`, `title` elements etc.
@@ -137,7 +137,7 @@ An invalid $index yields undef.
 If $index is undefined in array context, it returns an array of all items.
 If $index is undefined in scalar context, it returns the number of items.
 
-== @items &#3d $feed->match_item( link &#3d> qr/.../, title => qr/.../, ... ); ==
+== @items &#3d $feed->match_item( link &#3d> qr/.../, title &#3d> qr/.../, ... ); ==
 
 This method finds item(s) which match all regular expressions given.
 This method returns an array of all matched items in array context.
