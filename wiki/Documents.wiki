@@ -1,5 +1,3 @@
-= Documents =
+[[XML::TreePP]]
 
-[XML::TreePP]
-
-[XML::FeedPP]
+[[XML::FeedPP]]
