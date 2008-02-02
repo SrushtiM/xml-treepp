@@ -246,7 +246,7 @@ This method sets/gets the feed's `pubDate` element for RSS,
 returning its current value when $date is undefined.
 It is mapped to `dc:date` element for RDF,
 `modified` for Atom 0.3, and `updated` for Atom 1.0.
-See also [http://search.cpan.org/dist//DATE AND TIME FORMATS /DATE AND TIME FORMATS] section below.
+See also L</DATE AND TIME FORMATS> section below.
 
 == $feed->copyright() ==
 {{{
@@ -305,7 +305,7 @@ This method sets/gets the item's `pubDate` element,
 returning its current value when $date is undefined.
 It is mapped to `dc:date` element for RDF,
 `modified` for Atom 0.3, and `updated` for Atom 1.0.
-See also [http://search.cpan.org/dist//DATE AND TIME FORMATS /DATE AND TIME FORMATS] section below.
+See also L</DATE AND TIME FORMATS> section below.
 
 == $item->category() ==
 {{{
@@ -338,14 +338,14 @@ The second argument is optional.
 $item->set( $key => $value, ... );
 }}}
 This method sets customized node values or attributes.
-See also [http://search.cpan.org/dist//ACCESSOR AND MUTATORS /ACCESSOR AND MUTATORS] section below.
+See also L</ACCESSOR AND MUTATORS> section below.
 
 == $item->get() ==
 {{{
 $value = $item->get( $key );
 }}}
 This method returns the node value or attribute.
-See also [http://search.cpan.org/dist//ACCESSOR AND MUTATORS /ACCESSOR AND MUTATORS] section below.
+See also L</ACCESSOR AND MUTATORS> section below.
 
 == $item->link() ==
 {{{
