@@ -13,7 +13,7 @@ my $opt = {
         'Data::Pageset'     =>  '0',
 #       'LWP::UserAgent'    =>  '0',
 #       'HTTP::Lite'        =>  '0',
-        'XML::TreePP'       =>  '0.26',
+        'XML::TreePP'       =>  '0.33',
     },
 };
 
