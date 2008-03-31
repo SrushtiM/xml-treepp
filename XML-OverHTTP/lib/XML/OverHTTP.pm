@@ -1,7 +1,7 @@
 package XML::OverHTTP;
 use strict;
 use vars qw( $VERSION @ISA );
-$VERSION = '0.07';
+$VERSION = '0.08';
 use XML::TreePP;
 use CGI;
 # use Data::Page;
