@@ -283,6 +283,20 @@ See also L</ACCESSOR AND MUTATORS> section below.
 
 This method returns the item's C<link> element.
 
+=head2  $hash = $item->enclosure();
+
+Returns the item enclosure as the hash reference with C<url> (URL), C<type> (media type)
+and optional C<length> (number of bytes) and C<title> (enclosure type) keys.
+Note that C<title> is supported only for Atom 1.0 feeds.
+
+If there are several enclosures, this method returns an array reference.
+
+=head2  $item->enclosure({ url => $url, type => $type, length => $length, title => $title });
+
+Sets the item enclosure.
+
+An array reference can be passed to this function to set several enclosures.
+
 =head1  ACCESSOR AND MUTATORS
 
 This module understands only subset of C<rdf:*>, C<dc:*> modules
@@ -365,7 +379,7 @@ use XML::TreePP;
 
 use vars qw(
     $VERSION        $RSS20_VERSION  $ATOM03_VERSION
-    $XMLNS_RDF      $XMLNS_RSS      $XMLNS_DC       $XMLNS_ATOM03
+    $XMLNS_RDF      $XMLNS_RSS      $XMLNS_DC       $XMLNS_ENC      $XMLNS_ATOM03
     $XMLNS_NOCOPY   $TREEPP_OPTIONS $MIME_TYPES
     $FEED_METHODS   $ITEM_METHODS
     $XMLNS_ATOM10
@@ -379,9 +393,10 @@ $ATOM03_VERSION = '0.3';
 $XMLNS_RDF    = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#';
 $XMLNS_RSS    = 'http://purl.org/rss/1.0/';
 $XMLNS_DC     = 'http://purl.org/dc/elements/1.1/';
+$XMLNS_ENC    = 'http://purl.oclc.org/net/rss_2.0/enc#';
 $XMLNS_ATOM03 = 'http://purl.org/atom/ns#';
 $XMLNS_ATOM10 = 'http://www.w3.org/2005/Atom';
-$XMLNS_NOCOPY = [qw( xmlns xmlns:rdf xmlns:dc xmlns:atom )];
+$XMLNS_NOCOPY = [qw( xmlns xmlns:rdf xmlns:dc xmlns:enc xmlns:atom )];
 
 $TREEPP_OPTIONS = {
     force_array => [qw( item rdf:li entry )],
@@ -422,6 +437,7 @@ $ITEM_METHODS = [qw(
     guid
     pubDate
     image
+    enclosure
     set
 )];
 
@@ -622,7 +638,7 @@ sub merge_module_nodes {
     my $item1 = shift;
     my $item2 = shift;
     foreach my $key ( grep { /:/ } keys %$item2 ) {
-        next if ( $key =~ /^-?(dc|rdf|xmlns):/ );
+        next if ( $key =~ /^-?(dc|enc|rdf|xmlns):/ );
 
         # deep copy would be better
         $item1->{$key} = $item2->{$key};
@@ -1054,6 +1070,27 @@ sub image {
     undef;
 }
 
+sub enclosure {
+    my $self = shift;
+    my $val  = shift;
+    if ( defined $val ) {
+        $self->{enclosure} ||= {};
+        my $enclosure = $self->{enclosure};
+        $enclosure->{'-url'}    = $val->{url};
+        $enclosure->{'-type'}   = $val->{type} if defined $val->{type};
+        $enclosure->{'-length'} = $val->{length} if defined $val->{length};
+    }
+    elsif ( exists $self->{enclosure} ) {
+        my $enclosure = $self->{enclosure};
+        $val = {};
+        foreach my $key (qw( url type length )) {
+            $val->{$key} = $enclosure->{"-$key"} if exist $enclosure->{"-$key"};
+        }
+        return wantarray ? ($val,) : $val;
+    }
+    undef;
+}
+
 # ----------------------------------------------------------------
 package XML::FeedPP::RDF;
 use strict;
@@ -1087,6 +1124,7 @@ sub init_feed {
     $self->xmlns( 'xmlns'     => $XML::FeedPP::XMLNS_RSS );
     $self->xmlns( 'xmlns:rdf' => $XML::FeedPP::XMLNS_RDF );
     $self->xmlns( 'xmlns:dc'  => $XML::FeedPP::XMLNS_DC );
+    $self->xmlns( 'xmlns:enc' => $XML::FeedPP::XMLNS_ENC );
 
     $self->{'rdf:RDF'}->{channel} ||= XML::FeedPP::Element->new();
     XML::FeedPP::Element->ref_bless( $self->{'rdf:RDF'}->{channel} );
@@ -1353,6 +1391,42 @@ sub get_pubDate_native {
 }
 
 *get_pubDate_w3cdtf = \&get_pubDate_native;
+
+sub enclosure {
+    my $self = shift;
+    my $val  = shift;
+    if ( defined $val ) {
+        $val = [$val] if ref $val ne 'ARRAY';
+        my @array;
+        foreach my $h ( @$val ) {
+            my $tag = {};
+            $tag->{'-rdf:resource'} = $h->{url};
+            $tag->{'-enc:type'}     = $h->{type} if defined $h->{type};
+            $tag->{'-enc:length'}   = $h->{length} if defined $h->{length};
+            push @array, $tag;
+        }
+        if ( !@array ) {
+            delete $self->{'enc:enclosure'};
+        }
+        else {
+            $self->{'enc:enclosure'} = @array == 1 ? $array[0] : \@array;
+        }
+    }
+    elsif ( exists $self->{'enc:enclosure'} ) {
+        my $enclosure = $self->{'enc:enclosure'};
+        $enclosure = [$enclosure] if ref $enclosure eq 'HASH';
+        my @array;
+        foreach my $elt ( @$enclosure ) {
+            my %h;
+            $h{url}    = $elt->{'-rdf:resource'};
+            $h{type}   = $elt->{'-rdf:type'} if defined $elt->{'-rdf:type'};
+            $h{length} = $elt->{'-rdf:length'} if defined $elt->{'-rdf:length'};
+            push @array, \%h;
+        }
+        return wantarray ? @array : shift @array;
+    }
+    undef;
+}
 
 # ----------------------------------------------------------------
 package XML::FeedPP::Atom::Common;
@@ -1888,6 +1962,7 @@ sub title {
 }
 
 sub category { undef; }    # this element is NOT supported for Atom 0.3
+sub enclosure { undef; }   # this element is NOT supported for Atom 0.3
 
 # ----------------------------------------------------------------
 package XML::FeedPP::Atom::Atom10::Entry;
@@ -1984,6 +2059,47 @@ sub category {
 #       return wantarray ? @$term : shift @$term;
         return ( scalar @$term > 1 ) ? $term : shift @$term;
     }
+}
+
+sub enclosure {
+    my $self = shift;
+    my $val  = shift;
+    if ( defined $val ) {
+        $val = [$val] if ref $val ne 'ARRAY';
+        my $xml = $self->{link};
+        $xml = [ $xml ] if ref $xml ne 'ARRAY';
+        $xml = [ grep { ! exists $_->{'-rel'} || $_->{'-rel'} ne 'enclosure' } @$xml ];
+        foreach my $h ( @$val ) {
+            my $tag = { '-rel' => 'enclosure' };
+            $tag->{'-href'}   = $h->{url};
+            $tag->{'-type'}   = $h->{type} if defined $h->{type};
+            $tag->{'-length'} = $h->{length} if defined $h->{length};
+            $tag->{'-title'}  = $h->{title} if defined $h->{title};
+            push @$xml, $tag;
+        }
+        if ( !@$xml ) {
+            delete $self->{'link'};
+        }
+        else {
+            $self->{'link'} = @$xml == 1 ? $xml->[0] : \@$xml;
+        }
+    }
+    elsif ( exists $self->{'link'} ) {
+        my $link = $self->{'link'};
+        $link = [ $link ] if ref $link ne 'ARRAY';
+        $link = [ grep { $_->{'-rel'} eq 'enclosure' } @$link ];
+        my @array;
+        foreach my $elt ( @$link ) {
+            my %h;
+            $h{url}    = $elt->{'-href'};
+            $h{type}   = $elt->{'-type'} if defined $elt->{'-type'};
+            $h{length} = $elt->{'-length'} if defined $elt->{'-length'};
+            $h{title}  = $elt->{'-title'} if defined $elt->{'-title'};
+            push @array, \%h;
+        }
+        return wantarray ? @array : shift @array;
+    }
+    undef;
 }
 
 # ----------------------------------------------------------------
