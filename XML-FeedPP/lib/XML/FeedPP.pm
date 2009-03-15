@@ -627,6 +627,9 @@ sub add_clone_item {
         my $pubDate = $srcitem->pubDate();
         $dstitem->pubDate($pubDate) if defined $pubDate;
 
+        my $enclosure = $srcitem->enclosure();
+        $dstitem->enclosure($enclosure) if defined $enclosure;
+
         $self->merge_module_nodes( $dstitem, $srcitem );
     }
 
@@ -1084,7 +1087,7 @@ sub enclosure {
         my $enclosure = $self->{enclosure};
         $val = {};
         foreach my $key (qw( url type length )) {
-            $val->{$key} = $enclosure->{"-$key"} if exist $enclosure->{"-$key"};
+            $val->{$key} = $enclosure->{"-$key"} if exists $enclosure->{"-$key"};
         }
         return wantarray ? ($val,) : $val;
     }
@@ -1419,8 +1422,8 @@ sub enclosure {
         foreach my $elt ( @$enclosure ) {
             my %h;
             $h{url}    = $elt->{'-rdf:resource'};
-            $h{type}   = $elt->{'-rdf:type'} if defined $elt->{'-rdf:type'};
-            $h{length} = $elt->{'-rdf:length'} if defined $elt->{'-rdf:length'};
+            $h{type}   = $elt->{'-enc:type'} if defined $elt->{'-enc:type'};
+            $h{length} = $elt->{'-enc:length'} if defined $elt->{'-enc:length'};
             push @array, \%h;
         }
         return wantarray ? @array : shift @array;
@@ -2087,7 +2090,7 @@ sub enclosure {
     elsif ( exists $self->{'link'} ) {
         my $link = $self->{'link'};
         $link = [ $link ] if ref $link ne 'ARRAY';
-        $link = [ grep { $_->{'-rel'} eq 'enclosure' } @$link ];
+        $link = [ grep { exists $_->{'-rel'} && $_->{'-rel'} eq 'enclosure' } @$link ];
         my @array;
         foreach my $elt ( @$link ) {
             my %h;
