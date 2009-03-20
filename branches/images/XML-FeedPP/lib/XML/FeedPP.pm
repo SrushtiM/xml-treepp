@@ -297,6 +297,24 @@ Sets the item enclosure.
 
 An array reference can be passed to this function to set several enclosures.
 
+=head2 $item->attached_image({ mime_order => ['image/svg+xml', 'image/png'] });
+
+Returns the image attached to the item.
+
+The optional parameter can contain key C<mime_order> which specifies image mime
+types in the order of preference. The default C<mime_order> is
+C<['image/jpeg', 'image/gif', 'image/png']>.
+
+=head2 $item->attached_image($info, { url => $url, type => $type, length => $length, title => $title, width => $width, height => $height });
+
+Sets image attached to the item. C<url> is the URL of the image, C<type> is its
+MIME type, C<length> (optional) is its length in bytes, C<title> is image title.
+
+Setting attached image currently work only for RDF feeds. You may use C<enclosure()> method
+with other feed types. Also note that in RDF C<type> and C<length> keys don't work.
+
+C<$info> parameter is currently ignored. Pass C<undef> as its value.
+
 =head1  ACCESSOR AND MUTATORS
 
 This module understands only subset of C<rdf:*>, C<dc:*> modules
@@ -379,7 +397,7 @@ use XML::TreePP;
 
 use vars qw(
     $VERSION        $RSS20_VERSION  $ATOM03_VERSION
-    $XMLNS_RDF      $XMLNS_RSS      $XMLNS_DC       $XMLNS_ENC      $XMLNS_ATOM03
+    $XMLNS_RDF      $XMLNS_RSS      $XMLNS_DC       $XMLNS_ENC      $XMLNS_IMAGE    $XMLNS_ATOM03
     $XMLNS_NOCOPY   $TREEPP_OPTIONS $MIME_TYPES
     $FEED_METHODS   $ITEM_METHODS
     $XMLNS_ATOM10
@@ -394,9 +412,10 @@ $XMLNS_RDF    = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#';
 $XMLNS_RSS    = 'http://purl.org/rss/1.0/';
 $XMLNS_DC     = 'http://purl.org/dc/elements/1.1/';
 $XMLNS_ENC    = 'http://purl.oclc.org/net/rss_2.0/enc#';
+$XMLNS_IMAGE  = 'http://purl.org/rss/1.0/modules/image/';
 $XMLNS_ATOM03 = 'http://purl.org/atom/ns#';
 $XMLNS_ATOM10 = 'http://www.w3.org/2005/Atom';
-$XMLNS_NOCOPY = [qw( xmlns xmlns:rdf xmlns:dc xmlns:enc xmlns:atom )];
+$XMLNS_NOCOPY = [qw( xmlns xmlns:rdf xmlns:dc xmlns:enc xmlns:image xmlns:atom )];
 
 $TREEPP_OPTIONS = {
     force_array => [qw( item rdf:li entry )],
@@ -641,7 +660,7 @@ sub merge_module_nodes {
     my $item1 = shift;
     my $item2 = shift;
     foreach my $key ( grep { /:/ } keys %$item2 ) {
-        next if ( $key =~ /^-?(dc|enc|rdf|xmlns):/ );
+        next if ( $key =~ /^-?(dc|enc|image|rdf|xmlns):/ );
 
         # deep copy would be better
         $item1->{$key} = $item2->{$key};
@@ -788,6 +807,19 @@ sub elements {
             $self->$key( $val );
         } else {
             $self->set( $key, $val );
+        }
+    }
+}
+
+sub attached_image {
+    my ($self, $info) = @_;
+    my $order = ($info && $info->{mime_order}) || ['image/jpeg', 'image/gif', 'image/png'];
+    my $enc = $self->enclosure;
+    return unless $enc;
+    $enc = [ $enc ] if ref $enc ne 'ARRAY';
+    for my $mime (@$order) {
+        for my $e (@$enc) {
+            return $e if $e->{type} eq $mime;
         }
     }
 }
@@ -1124,10 +1156,11 @@ sub init_feed {
     if ( ! UNIVERSAL::isa( $self->{'rdf:RDF'}, 'HASH' ) ) {
         Carp::croak "Invalid RDF format: $self->{'rdf:RDF'}";
     }
-    $self->xmlns( 'xmlns'     => $XML::FeedPP::XMLNS_RSS );
-    $self->xmlns( 'xmlns:rdf' => $XML::FeedPP::XMLNS_RDF );
-    $self->xmlns( 'xmlns:dc'  => $XML::FeedPP::XMLNS_DC );
-    $self->xmlns( 'xmlns:enc' => $XML::FeedPP::XMLNS_ENC );
+    $self->xmlns( 'xmlns'       => $XML::FeedPP::XMLNS_RSS   );
+    $self->xmlns( 'xmlns:rdf'   => $XML::FeedPP::XMLNS_RDF   );
+    $self->xmlns( 'xmlns:dc'    => $XML::FeedPP::XMLNS_DC    );
+    $self->xmlns( 'xmlns:enc'   => $XML::FeedPP::XMLNS_ENC   );
+    $self->xmlns( 'xmlns:image' => $XML::FeedPP::XMLNS_IMAGE );
 
     $self->{'rdf:RDF'}->{channel} ||= XML::FeedPP::Element->new();
     XML::FeedPP::Element->ref_bless( $self->{'rdf:RDF'}->{channel} );
@@ -1429,6 +1462,29 @@ sub enclosure {
         return wantarray ? @array : shift @array;
     }
     undef;
+}
+
+sub attached_image {
+    my ($self, $info, $value) = @_;
+    if ( $value ) {
+        my $tag = {};
+        $tag->{'-rdf:about'}   = $value->{url};
+        $tag->{'dc:title'}     = $value->{title} if defined $value->{title};
+        $tag->{'image:width'}  = $value->{width} if defined $value->{width};
+        $tag->{'image:height'} = $value->{height} if defined $value->{height};
+        $self->{'image:item'} = $tag;
+    } else {
+        my $img = $self->{'image:item'};
+        if ( $img ) {
+            return {
+                url    => $img->{'-rdf:about'},
+                title  => $img->{'dc:title'},
+                width  => $img->{'image:width'},
+                height => $img->{'image:height'},
+            };
+        }
+        return $self->XML::FeedPP::Item::attached_image($info);
+    }
 }
 
 # ----------------------------------------------------------------
