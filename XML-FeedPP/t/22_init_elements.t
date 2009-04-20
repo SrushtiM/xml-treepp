@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------
     use strict;
-    use Test::More tests => 74;
+    use Test::More tests => 77;
     BEGIN { use_ok('XML::FeedPP') };
 # ----------------------------------------------------------------
     my $ftitle = 'Kawa.net XP';
@@ -21,7 +21,8 @@
     my $ititle3 = 'Kawa.net Albums';
     my $idateA  = 'Sun, 11 Dec 2005 10:09:08 -0700';
     my $idateB  = '2005-12-11T10:09:08-07:00';
-    my $idesc   = 'Description';
+    my $isumm   = 'Summary';
+    my $icont   = 'Content';
     my $icate   = 'Category';
     my $iauthor = 'Author';
     my $iguid   = 'GUID';
@@ -42,7 +43,8 @@
         link        =>  $ilink1,
         title       =>  $ititle1,
         pubDate     =>  $idateA,
-        description =>  $idesc,
+        summary     =>  $isumm,
+        content     =>  $icont,
         category    =>  $icate,
         author      =>  $iauthor,
         guid        =>  $iguid,
@@ -88,7 +90,8 @@
         is( $item1->link(),             $ilink1,    "$type Item1 link()" );
         is( $item1->title(),            $ititle1,   "$type Item1 title()" );
         is( $item1->get_pubDate_w3cdtf(), $idateB,  "$type Item1 pubDate()" );
-        is( $item1->description(),      $idesc,     "$type Item1 description()" );
+        is( $item1->summary(),          $isumm,     "$type Item1 summary()" );
+        is( $item1->content(),          $icont,     "$type Item1 content()" );
         is( $item1->author(),           $iauthor,   "$type Item1 author()" );
         is( $item1->get($iorgkey),      $iorgval,   "$type Item1 set/get()" );
         if ( $type ne 'XML::FeedPP::Atom' ) {
