@@ -256,11 +256,29 @@ returning a list of current values when any arguments are undefined.
 This method sets/gets the item's C<title> element,
 returning its current value when the $text is undefined.
 
-=head2  $item->description( $html );
+=head2  $item->description( $text );
+
+I<This method is deprecated in favor of C<summary> and C<content> methods.>
 
 This method sets/gets the item's C<description> element in HTML or plain text,
 returning its current value when $text is undefined.
-It is mapped to C<content> element for Atom 0.3/1.0.
+For backward compatibility,
+it is mapped to C<content> method (which returns C<content> element) for Atom 0.3/1.0;
+it is mapped to C<summary> method for the rest feed types.
+
+Note that because it is mapped to different method for Atom and for other feed types,
+copying an item from an Atom feed to an other feed or from an other feed type to Atom
+changes the value returned by C<description> method.
+
+=head2  $item->summary( $text );
+
+This method sets/gets the item's short summary in HTML or plain text,
+returning its current value when $text is undefined.
+
+=head2  $item->content( $text );
+
+This method sets/gets the item's content (possibly long) in HTML or plain text,
+returning its current value when $text is undefined.
 
 =head2  $item->pubDate( $date );
 
@@ -422,6 +440,7 @@ use vars qw(
     $XMLNS_NOCOPY   $TREEPP_OPTIONS $MIME_TYPES
     $FEED_METHODS   $ITEM_METHODS
     $XMLNS_ATOM10
+    $XMLNS_CONTENT  $XMLNS_XHTML
 );
 
 $VERSION = "0.40";
@@ -436,7 +455,9 @@ $XMLNS_ENC    = 'http://purl.oclc.org/net/rss_2.0/enc#';
 $XMLNS_IMAGE  = 'http://purl.org/rss/1.0/modules/image/';
 $XMLNS_ATOM03 = 'http://purl.org/atom/ns#';
 $XMLNS_ATOM10 = 'http://www.w3.org/2005/Atom';
-$XMLNS_NOCOPY = [qw( xmlns xmlns:rdf xmlns:dc xmlns:enc xmlns:image xmlns:atom )];
+$XMLNS_CONTENT = 'http://purl.org/rss/1.0/modules/content/';
+$XMLNS_XHTML  = 'http://www.w3.org/1999/xhtml';
+$XMLNS_NOCOPY = [qw( xmlns xmlns:rdf xmlns:dc xmlns:enc xmlns:image xmlns:atom xmlns:content xmlns:xhtml )];
 
 $TREEPP_OPTIONS = {
     force_array => [qw( item rdf:li entry )],
@@ -470,7 +491,8 @@ $FEED_METHODS = [qw(
 
 $ITEM_METHODS = [qw(
     title
-    description
+    summary
+    content
     category
     author
     link
@@ -680,8 +702,11 @@ sub add_clone_item {
         my $title = $srcitem->title();
         $dstitem->title($title) if defined $title;
 
-        my $description = $srcitem->description();
-        $dstitem->description($description) if defined $description;
+        my $summary = $srcitem->summary();
+        $dstitem->summary($summary) if defined $summary;
+
+        my $content = $srcitem->content();
+        $dstitem->content($content) if defined $content;
 
         my $category = $srcitem->category();
         $dstitem->category($category) if defined $category;
@@ -859,6 +884,9 @@ sub elements {
         }
     }
 }
+
+# This is overridden for Atom entries
+sub description { shift->summary(@_); }
 
 sub attached_image {
     my ($self, $info) = @_;
@@ -1086,8 +1114,19 @@ use vars qw( @ISA );
 @ISA = qw( XML::FeedPP::Item );
 
 sub title       { shift->get_or_set( "title",       @_ ); }
-sub description { shift->get_or_set( "description", @_ ); }
+sub summary     { shift->get_or_set( "description", @_ ); }
 sub category    { shift->get_set_array( "category", @_ ); }
+
+sub content {
+    my $self = shift;
+    if ( scalar @_ ) {
+        $self->set_value( 'content:encoded' => $_[0] );
+    } else {
+        $self->get_value('content:encoded')
+        || $self->get_value('xhtml:body')
+        || $self->get_value('xhtml:div');
+    }
+}
 
 sub author {
     my $self = shift;
@@ -1221,6 +1260,8 @@ sub init_feed {
     $self->xmlns( 'xmlns:dc'    => $XML::FeedPP::XMLNS_DC    );
     $self->xmlns( 'xmlns:enc'   => $XML::FeedPP::XMLNS_ENC   );
     $self->xmlns( 'xmlns:image' => $XML::FeedPP::XMLNS_IMAGE );
+    $self->xmlns( 'xmlns:content' => $XML::FeedPP::XMLNS_CONTENT );
+    $self->xmlns( 'xmlns:xhtml' => $XML::FeedPP::XMLNS_XHTML );
 
     $self->{'rdf:RDF'}->{channel} ||= XML::FeedPP::Element->new();
     XML::FeedPP::Element->ref_bless( $self->{'rdf:RDF'}->{channel} );
@@ -1454,7 +1495,8 @@ use vars qw( @ISA );
 @ISA = qw( XML::FeedPP::Item );
 
 sub title       { shift->get_or_set( "title",       @_ ); }
-sub description { shift->get_or_set( "description", @_ ); }
+sub summary     { shift->get_or_set( "description", @_ ); }
+sub content     { shift->get_or_set( "content:encoded", @_ ); }
 sub category    { shift->get_set_array( "dc:subject",  @_ ); }
 sub guid { undef; }    # this element is NOT supported for RDF
 
@@ -1985,6 +2027,16 @@ use strict;
 use vars qw( @ISA );
 @ISA = qw( XML::FeedPP::Item );
 
+# Overridden for Atom for backward compatibility
+sub description {
+    my $self = shift;
+    if(@_) {
+        $self->content(@_);
+    } else {
+        $self->content || $self->summary;
+    }
+}
+
 sub author {
     my $self = shift;
     my $name = shift;
@@ -2004,11 +2056,12 @@ use strict;
 use vars qw( @ISA );
 @ISA = qw( XML::FeedPP::Atom::Common::Entry );
 
-sub description {
+sub summary { shift->get_or_set( 'summary', @_ ); }
+
+sub content {
     my $self = shift;
     my $desc = shift;
-    return $self->get_value('content')
-        || $self->get_value('summary') unless defined $desc;
+    return $self->get_value('content') unless defined $desc;
     $self->set_value(
         'content' => $desc,
         type      => 'text/html',
@@ -2095,13 +2148,8 @@ use strict;
 use vars qw( @ISA );
 @ISA = qw( XML::FeedPP::Atom::Common::Entry );
 
-sub description {
-    my $self = shift;
-    my $desc = shift;
-    return $self->get_value('content')
-        || $self->get_value('summary') unless defined $desc;
-    $self->set_value( 'content' => $desc, @_ );
-}
+sub summary { shift->get_or_set( 'summary', @_ ); }
+sub content { shift->get_or_set( 'content', @_ ); }
 
 sub link {
     my $self = shift;

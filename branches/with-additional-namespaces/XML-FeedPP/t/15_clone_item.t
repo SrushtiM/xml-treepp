@@ -1,11 +1,12 @@
 # ----------------------------------------------------------------
     use strict;
-    use Test::More tests => 49;
+    use Test::More tests => 55;
     BEGIN { use_ok('XML::FeedPP') };
 # ----------------------------------------------------------------
     my $link = "http://www.kawa.net/";
     my $title = "Kawa.net XP";
-    my $description = "Yusuke Kawasaki's website";
+    my $summary = "Yusuke Kawasaki's website";
+    my $content = "Website content";
     my $author = "Yusuke Kawasaki";
     my $pubDate = "2004-11-09T11:33:20Z";
 # ----------------------------------------------------------------
@@ -26,7 +27,8 @@
     $feed0->link( $link );
     my $item0 = $feed0->add_item( $link );
     $item0->title( $title );
-    $item0->description( $description );
+    $item0->summary( $summary );
+    $item0->content( $content );
     $item0->author( $author );
     $item0->pubDate( $pubDate );
     $item0->set( %$media );
@@ -49,7 +51,8 @@
 
         is( $item1->link(),         $link,          "$type link" );
         is( $item1->title(),        $title,         "$type title" );
-        is( $item1->description(),  $description,   "$type description" );
+        is( $item1->summary(),      $summary,       "$type summary" );
+        is( $item1->content(),      $content,       "$type content" );
         is( $item1->author(),       $author,        "$type author" );
         is( $item1->pubDate(),      $pubDate,       "$type pubDate" );
         is( $item1->get('media:title'),       $media->{'media:title'},       "$type media:title" );
