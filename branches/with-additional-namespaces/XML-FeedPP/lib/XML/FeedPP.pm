@@ -440,7 +440,7 @@ use vars qw(
     $XMLNS_NOCOPY   $TREEPP_OPTIONS $MIME_TYPES
     $FEED_METHODS   $ITEM_METHODS
     $XMLNS_ATOM10
-    $XMLNS_CONTENT  $XMLNS_XHTML
+    $XMLNS_CONTENT
 );
 
 $VERSION = "0.40";
@@ -456,8 +456,7 @@ $XMLNS_IMAGE  = 'http://purl.org/rss/1.0/modules/image/';
 $XMLNS_ATOM03 = 'http://purl.org/atom/ns#';
 $XMLNS_ATOM10 = 'http://www.w3.org/2005/Atom';
 $XMLNS_CONTENT = 'http://purl.org/rss/1.0/modules/content/';
-$XMLNS_XHTML  = 'http://www.w3.org/1999/xhtml';
-$XMLNS_NOCOPY = [qw( xmlns xmlns:rdf xmlns:dc xmlns:enc xmlns:image xmlns:atom xmlns:content xmlns:xhtml )];
+$XMLNS_NOCOPY = [qw( xmlns xmlns:rdf xmlns:dc xmlns:enc xmlns:image xmlns:atom xmlns:content )];
 
 $TREEPP_OPTIONS = {
     force_array => [qw( item rdf:li entry )],
@@ -1117,16 +1116,7 @@ sub title       { shift->get_or_set( "title",       @_ ); }
 sub summary     { shift->get_or_set( "description", @_ ); }
 sub category    { shift->get_set_array( "category", @_ ); }
 
-sub content {
-    my $self = shift;
-    if ( scalar @_ ) {
-        $self->set_value( 'content:encoded' => $_[0] );
-    } else {
-        $self->get_value('content:encoded')
-        || $self->get_value('xhtml:body')
-        || $self->get_value('xhtml:div');
-    }
-}
+sub content { shift->get_or_set( "content:encoded", @_ ); }
 
 sub author {
     my $self = shift;
@@ -1261,7 +1251,6 @@ sub init_feed {
     $self->xmlns( 'xmlns:enc'   => $XML::FeedPP::XMLNS_ENC   );
     $self->xmlns( 'xmlns:image' => $XML::FeedPP::XMLNS_IMAGE );
     $self->xmlns( 'xmlns:content' => $XML::FeedPP::XMLNS_CONTENT );
-    $self->xmlns( 'xmlns:xhtml' => $XML::FeedPP::XMLNS_XHTML );
 
     $self->{'rdf:RDF'}->{channel} ||= XML::FeedPP::Element->new();
     XML::FeedPP::Element->ref_bless( $self->{'rdf:RDF'}->{channel} );
